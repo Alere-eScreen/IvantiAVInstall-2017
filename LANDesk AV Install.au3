@@ -38,10 +38,8 @@ dim $silent = true ; Use true for unattended installs
 ; Do not tamper with
 dim $logFilePath = "C:\Windows\Temp\LANDeskAV\install.log"
 dim $workDir = "C:\Windows\Temp\LANDeskAV"
-dim $tempAVDirX86 = "C:\Program Files\LANDesk\LDClient\temp_av"
-dim $tempAVDirX64 = "C:\Program Files (x86)\LANDesk\LDClient\temp_av"
-dim $antivirusDirX86 = "C:\Program Files\LANDesk\LDClient\antivirus"
-dim $antivirusDirX64 = "C:\Program Files (x86)\LANDesk\LDClient\antivirus"
+dim $tempAVDir = ($architecture = "x86") ? "C:\Program Files\LANDesk\LDClient\temp_av" : "C:\Program Files (x86)\LANDesk\LDClient\temp_av"
+dim $antivirusDir = ($architecture = "x86") ? "C:\Program Files\LANDesk\LDClient\antivirus" : "C:\Program Files (x86)\LANDesk\LDClient\antivirus"
 #EndRegion
 
 
@@ -85,67 +83,53 @@ ElseIf (FileExists(@ScriptDir & "\avclientbd.7z")) Then
 EndIf
 
 ; Creating install directories
-If ($architecture = "x86")
-	_FileWriteLog($logFile, "Creating Install Directory: " & $tempAVDirX86)
-	DirCreate($tempAVDirX86)
+_FileWriteLog($logFile, "Creating install directory: " & $tempAVDir)
+DirCreate($tempAVDir)
 
-	_FileWriteLog($logFile, "Creating Install Directory: " & $antivirusDirX86)
-	DirCreate($antivirusDirX86)
-ElseIf ($architecture = "x64")
-	_FileWriteLog($logFile, "Creating Install Directory: " & $tempAVDirX64)
-	DirCreate($tempAVDirX64)
-
-	_FileWriteLog($logFile, "Creating Install Directory: " & $antivirusDirX64)
-	DirCreate($antivirusDirX64)
-Else
-	_FileWriteLog($logFile, "Error: Unable to create install directories. Invalid architecture version.")
-	Exit(50)
-EndIf
+_FileWriteLog($logFile, "Creating install directory: " & $antivirusDir)
+DirCreate($antivirusDir)
 
 ; Extract files to working directories
-If ($architecture = "x86")
-	If (FileExists($workDir & "\avclientbd.rar")) Then
-		_FileWriteLog($logFile, "Extracting files to " & $tempAVDirX86)
-		RunWait($workDir & '7za.exe x avclientbd.rar -o"' & $tempAVDirX86 & '"')
+If (FileExists($workDir & "\avclientbd.rar")) Then
+	_FileWriteLog($logFile, "Extracting files to " & $tempAVDir)
+	RunWait($workDir & '\7za.exe x avclientbd.rar -o"' & $tempAVDir & '"')
 
-		_FileWriteLog($logFile, "Extracting files to " & $antivirusDirX86)
-		RunWait($workDir & '7za.exe x avclientbd.rar -o"' & $antivirusDirX86 & '"')
-	ElseIf (FileExists($workDir & "\avclientbd.zip")) Then
-		_FileWriteLog($logFile, "Extracting files to " & $tempAVDirX86)
-		RunWait($workDir & '7za.exe x avclientbd.zip -o"' & $tempAVDirX86 & '"')
+	_FileWriteLog($logFile, "Extracting files to " & $antivirusDir)
+	RunWait($workDir & '\7za.exe x avclientbd.rar -o"' & $antivirusDir & '"')
+ElseIf (FileExists($workDir & "\avclientbd.zip")) Then
+	_FileWriteLog($logFile, "Extracting files to " & $tempAVDir)
+	RunWait($workDir & '\7za.exe x avclientbd.zip -o"' & $tempAVDir & '"')
 
-		_FileWriteLog($logFile, "Extracting files to " & $antivirusDirX86)
-		RunWait($workDir & '7za.exe x avclientbd.zip -o"' & $antivirusDirX86 & '"')
-	ElseIf (FileExists($workDir & "\avclientbd.7z")) Then
-		_FileWriteLog($logFile, "Extracting files to " & $tempAVDirX86)
-		RunWait($workDir & '7za.exe x avclientbd.7z -o"' & $tempAVDirX86 & '"')
+	_FileWriteLog($logFile, "Extracting files to " & $antivirusDir)
+	RunWait($workDir & '\7za.exe x avclientbd.zip -o"' & $antivirusDir & '"')
+ElseIf (FileExists($workDir & "\avclientbd.7z")) Then
+	_FileWriteLog($logFile, "Extracting files to " & $tempAVDir)
+	RunWait($workDir & '\7za.exe x avclientbd.7z -o"' & $tempAVDir & '"')
 
-		_FileWriteLog($logFile, "Extracting files to " & $antivirusDirX86)
-		RunWait($workDir & '7za.exe x avclientbd.7z -o"' & $antivirusDirX86 & '"')
-	EndIf
-ElseIf
-	If (FileExists($workDir & "\avclientbd.rar")) Then
-		_FileWriteLog($logFile, "Extracting files to " & $tempAVDirX64)
-		RunWait($workDir & '7za.exe x avclientbd.rar -o"' & $tempAVDirX64 & '"')
+	_FileWriteLog($logFile, "Extracting files to " & $antivirusDir)
+	RunWait($workDir & '\7za.exe x avclientbd.7z -o"' & $antivirusDir & '"')
+EndIf
 
-		_FileWriteLog($logFile, "Extracting files to " & $antivirusDirX64)
-		RunWait($workDir & '7za.exe x avclientbd.rar -o"' & $antivirusDirX64 & '"')
-	ElseIf (FileExists($workDir & "\avclientbd.zip")) Then
-		_FileWriteLog($logFile, "Extracting files to " & $tempAVDirX64)
-		RunWait($workDir & '7za.exe x avclientbd.zip -o"' & $tempAVDirX64 & '"')
+; Perform special operation for x64 clients
+If ($architecture = "x64")
+	_FileWriteLog($logFile, "Renaming LDAV64.exe -> LDAV.exe (with overwrite)")
+	FileMove($antivirusDir & "\LDAV64.exe", $antivirusDir & "\LDAV.exe", 1)
 
-		_FileWriteLog($logFile, "Extracting files to " & $antivirusDirX64)
-		RunWait($workDir & '7za.exe x avclientbd.zip -o"' & $antivirusDirX64 & '"')
-	ElseIf (FileExists($workDir & "\avclientbd.7z")) Then
-		_FileWriteLog($logFile, "Extracting files to " & $tempAVDirX64)
-		RunWait($workDir & '7za.exe x avclientbd.7z -o"' & $tempAVDirX64 & '"')
+	_FileWriteLog($logFile, "Renaming LDAVDB64.dll -> LDAVDB.dll (with overwrite)")
+	FileMove($antivirusDir & "\LDAVDB64.dll", $antivirusDir & "\LDAVDB.dll")
+EndIf
 
-		_FileWriteLog($logFile, "Extracting files to " & $antivirusDirX64)
-		RunWait($workDir & '7za.exe x avclientbd.7z -o"' & $antivirusDirX64 & '"')
+; Run the install process
+If ($silent = True)
+	RunWait($antivirusDir & "\LDAV.exe /install", @SW_HIDE)
+Else
+	RunWait($antivirusDir & "\LDAV.exe /install")
+	dim $rebootResult = MsgBox(36, "Reboot Required", "A reboot is required to complete the install. Reboot now?")
+	if ($rebootResult = 7)
+		Exit(0)
 	EndIf
 EndIf
 
-
-
-
-
+; Reboot
+Shutdown(6)
+Exit(0)
