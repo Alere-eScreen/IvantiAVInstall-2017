@@ -1,4 +1,4 @@
-# LANDeskAVInstall-2017
+# IvantiAVInstall-2017
 This repository contains an AutoIT script which, when properly configured, will enable the installation of BitDefender Antivirus for Ivanti's LANDesk Management Suite.
 
 > Current Version: 1.0.0
@@ -23,4 +23,4 @@ dim $silent = true ; Use true for unattended installs
 8. Upload this file to a web server or to the Core to allow clients to download the package.
 
 ## Changes and Bugs
-Please feel free to submit ISsues and PRs! AutoIT is not my primary language so I'm sure there are many improvements that can be made.
+Please feel free to submit Issues and PRs! AutoIT is not my primary language so I'm sure there are many improvements that can be made.
