@@ -66,22 +66,6 @@ DirCreate($workDir)
 ; Create the log file
 Local $logFile = FileOpen($logFilePath, 1)
 
-; Place 7z in the working directory
-_FileWriteLog($logFile, "Writing 7za.exe to " & @ScriptDir & "\7za.exe")
-FileInstall(@ScriptDir & "\7za.exe", $workDir & "\7za.exe")
-
-; Place the AV Install files in the working directory
-If (FileExists(".\avclientbd.rar")) Then
-	_FileWriteLog($logFile, "Writing avclientbd.rar to " & @ScriptDir & "\avclientbd.rar")
-	FileInstall(".\avclientbd.rar", $workDir & "\avclientbd.rar")
-ElseIf (FileExists(".\avclientbd.zip")) Then
-	_FileWriteLog($logFile, "Writing avclientbd.zip to " & @ScriptDir & "\avclientbd.zip")
-	FileInstall(".\avclientbd.zip", $workDir & "\avclientbd.zip")
-ElseIf (FileExists(".\avclientbd.7z")) Then
-	_FileWriteLog($logFile, "Writing avclientbd.7z to " & @ScriptDir & "\avclientbd.7z")
-	FileInstall(".\avclientbd.7z", $workDir & "\avclientbd.7z")
-EndIf
-
 ; Creating install directories
 _FileWriteLog($logFile, "Creating install directory: " & $tempAVDir)
 DirCreate($tempAVDir)
@@ -89,26 +73,21 @@ DirCreate($tempAVDir)
 _FileWriteLog($logFile, "Creating install directory: " & $antivirusDir)
 DirCreate($antivirusDir)
 
-; Extract files to working directories
-If (FileExists($workDir & "\avclientbd.rar")) Then
-	_FileWriteLog($logFile, "Extracting files to " & $tempAVDir)
-	RunWait($workDir & '\7za.exe x avclientbd.rar -o"' & $tempAVDir & '"')
+; Place the AV Install files in the install directories
+_FileWriteLog($logFile, "Writing avclientbd.exe to " & $tempAVDir & "\avclientbd.exe")
+FileInstall(".\avclientbd.exe", $tempAVDir & "\avclientbd.exe")
 
-	_FileWriteLog($logFile, "Extracting files to " & $antivirusDir)
-	RunWait($workDir & '\7za.exe x avclientbd.rar -o"' & $antivirusDir & '"')
-ElseIf (FileExists($workDir & "\avclientbd.zip")) Then
-	_FileWriteLog($logFile, "Extracting files to " & $tempAVDir)
-	RunWait($workDir & '\7za.exe x avclientbd.zip -o"' & $tempAVDir & '"')
+_FileWriteLog($logFile, "Writing avclientbd.exe to " & $antivirusDir & "\avclientbd.exe")
+FileInstall(".\avclientbd.exe", $antivirusDir & "\avclientbd.exe")
 
-	_FileWriteLog($logFile, "Extracting files to " & $antivirusDir)
-	RunWait($workDir & '\7za.exe x avclientbd.zip -o"' & $antivirusDir & '"')
-ElseIf (FileExists($workDir & "\avclientbd.7z")) Then
-	_FileWriteLog($logFile, "Extracting files to " & $tempAVDir)
-	RunWait($workDir & '\7za.exe x avclientbd.7z -o"' & $tempAVDir & '"')
+; Extract files and clean up
+_FileWriteLog($logFile, "Extracting files to " & $tempAVDir)
+RunWait($tempAVDir & "\avclientbd.exe")
+FileDelete($tempAVDir & "\avclientbd.exe")
 
-	_FileWriteLog($logFile, "Extracting files to " & $antivirusDir)
-	RunWait($workDir & '\7za.exe x avclientbd.7z -o"' & $antivirusDir & '"')
-EndIf
+_FileWriteLog($logFile, "Extracting files to " & $antivirusDir)
+RunWait($antivirusDir & "\avclientbd.exe")
+FileDelete($antivirusDir & "\avclientbd.exe")
 
 ; Perform special operation for x64 clients
 If ($architecture = "x64") Then
