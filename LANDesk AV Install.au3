@@ -2,7 +2,7 @@
 
  AutoIt Version: 3.3.14.2
  Program Version: 1.0.0
- Author:         Devin Duanne, Abbott Health - devin.duanne@escreen.com
+ Author:         Devin Duanne, Abbott - devin.duanne@escreen.com
  License: 		 GNU GPLv3 https://opensource.org/licenses/GPL-3.0
 
  Remarks:
