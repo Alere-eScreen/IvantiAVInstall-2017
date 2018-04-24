@@ -44,7 +44,7 @@ dim $antivirusDir = ($architecture = "x86") ? "C:\Program Files\LANDesk\LDClient
 
 
 ; Prompt user to continue
-If ($silent = false)
+If ($silent = false) Then
 	dim $Result
 
 	$Result = msgbox(36,"LANDesk 2017 BitDefender Installer. . .","The LANDesk 2017 antivirus agent (BitDefender) is about to be installed" & @CRLF & "on this computer." & @CRLF & @CRLF & "This installation will require a reboot.  Once started, the installation" & @CRLF & "will run automatically without human intervention." & @CRLF & @CRLF & "Click 'Yes' to continue or 'No' to exit")
@@ -57,7 +57,7 @@ EndIf
 
 
 ; Create a temporary working directory
-If (DirGetSize($workDir) <> -1 Then
+If (DirGetSize($workDir) <> -1) Then
 	DirRemove($workDir, 1)
 EndIf
 
@@ -71,15 +71,15 @@ _FileWriteLog($logFile, "Writing 7za.exe to " & @ScriptDir & "\7za.exe")
 FileInstall(@ScriptDir & "\7za.exe", $workDir & "\7za.exe")
 
 ; Place the AV Install files in the working directory
-If (FileExists(@ScriptDir & "\avclientbd.rar")) Then
+If (FileExists(".\avclientbd.rar")) Then
 	_FileWriteLog($logFile, "Writing avclientbd.rar to " & @ScriptDir & "\avclientbd.rar")
-	FileInstall(@ScriptDir & "\avclientbd.rar", $workDir & "\avclientbd.rar)
-ElseIf (FileExists(@ScriptDir & "\avclientbd.zip")) Then
+	FileInstall(".\avclientbd.rar", $workDir & "\avclientbd.rar")
+ElseIf (FileExists(".\avclientbd.zip")) Then
 	_FileWriteLog($logFile, "Writing avclientbd.zip to " & @ScriptDir & "\avclientbd.zip")
-	FileInstall(@ScriptDir & "\avclientbd.zip", $workDir & "\avclientbd.zip)
-ElseIf (FileExists(@ScriptDir & "\avclientbd.7z")) Then
+	FileInstall(".\avclientbd.zip", $workDir & "\avclientbd.zip")
+ElseIf (FileExists(".\avclientbd.7z")) Then
 	_FileWriteLog($logFile, "Writing avclientbd.7z to " & @ScriptDir & "\avclientbd.7z")
-	FileInstall(@ScriptDir & "\avclientbd.7z", $workDir & "\avclientbd.7z)
+	FileInstall(".\avclientbd.7z", $workDir & "\avclientbd.7z")
 EndIf
 
 ; Creating install directories
@@ -111,7 +111,7 @@ ElseIf (FileExists($workDir & "\avclientbd.7z")) Then
 EndIf
 
 ; Perform special operation for x64 clients
-If ($architecture = "x64")
+If ($architecture = "x64") Then
 	_FileWriteLog($logFile, "Renaming LDAV64.exe -> LDAV.exe (with overwrite)")
 	FileMove($antivirusDir & "\LDAV64.exe", $antivirusDir & "\LDAV.exe", 1)
 
@@ -120,12 +120,12 @@ If ($architecture = "x64")
 EndIf
 
 ; Run the install process
-If ($silent = True)
+If ($silent = True) Then
 	RunWait($antivirusDir & "\LDAV.exe /install", @SW_HIDE)
 Else
 	RunWait($antivirusDir & "\LDAV.exe /install")
 	dim $rebootResult = MsgBox(36, "Reboot Required", "A reboot is required to complete the install. Reboot now?")
-	if ($rebootResult = 7)
+	if ($rebootResult = 7) Then
 		Exit(0)
 	EndIf
 EndIf
