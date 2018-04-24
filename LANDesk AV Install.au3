@@ -14,8 +14,8 @@
 	Installs BitDefender AV for LANDesk 2017
 
  Instructions for use:
-	1. Navigate to your avclientdb folder on your core and zip the files into a .zip, .rar, or .7z file. Copy this into the directory with the script.
-		1.a. The default directory for this is \\YourCoreName\ldlogon\avclientbd\
+	1. Navigate to your avclientdb folder on your core server and zip the contents of that folder into a .zip, .rar, or .7z file. Copy this into the directory with this script.
+		1.a. The default directory for the avclientdb folder is `\\YourCoreName\ldlogon\avclientbd\`
 	2. Define the target architecture below
 	3. Build the script using SciTE
 	4. Name the executable according to the architecture it is built for
